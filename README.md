@@ -1,12 +1,13 @@
 # OpenCode Report Skills
 
-Skill สำหรับอ่านเอกสาร วิเคราะห์ข้อมูล สร้างกราฟภาษาไทย และทำรายงาน Word/PDF จากไฟล์บนเครื่อง
+Skill สำหรับอ่านเอกสาร วิเคราะห์ข้อมูล รวมข้อมูลเข้า template บริษัท สร้างกราฟภาษาไทย และทำรายงาน Word/PDF จากไฟล์บนเครื่อง
 
 | Skill | หน้าที่ |
 | --- | --- |
 | `work-data-analysis` | อ่าน PDF/DOCX และ CSV/XLSX ตรวจข้อมูลซ้ำ/ขาด และบันทึกผลวิเคราะห์พร้อมหลักฐาน |
 | `work-data-charts` | สร้างกราฟ PNG/SVG พร้อมข้อมูลที่ใช้สร้างและฟอนต์ไทย |
 | `work-report-writing` | สร้างรายงาน DOCX/HTML/PDF จากเนื้อหาชุดเดียวกัน |
+| `consolidate-company-data` | รวม CSV/XLSX หลายแหล่งเข้า template XLSX พร้อม mapping รายการรอตรวจ และที่มาทุกแถว |
 
 ## ติดตั้งแบบ Global
 
@@ -52,7 +53,9 @@ python3.12 -m venv .venv
 
 ถ้า repo เป็น private ต้องล็อกอิน GitHub ที่มีสิทธิ์ก่อน clone คำสั่งติดตั้งจะข้าม Skill ชื่อเดิมและไม่แก้ config ของ OpenCode
 
-สำหรับติดตั้งเฉพาะโปรเจกต์ ให้คัดลอกทั้งสามโฟลเดอร์จาก `skills/` ไปที่ `<project>/.opencode/skills/` แทน Global
+สำหรับติดตั้งเฉพาะโปรเจกต์ ให้คัดลอกโฟลเดอร์ Skill ที่ต้องการจาก `skills/` ไปที่ `<project>/.opencode/skills/` แทน Global
+
+หากต้องการเฉพาะ Skill รวมข้อมูล ให้คัดลอกทั้งโฟลเดอร์ `skills/consolidate-company-data/` รวม `references/` ไปที่ `<project>/.opencode/skills/consolidate-company-data/` แล้วเปิดโปรเจกต์นั้นใน OpenCode ไม่ต้องติดตั้ง Skill อื่นหรือ browser สำหรับงานนี้ Skill จะใช้เครื่องมืออ่านและสร้าง Excel ที่มีในเครื่อง เช่น Python พร้อม openpyxl และแจ้งหากเครื่องมือยังไม่พร้อม
 
 Python dependencies ติดตั้งใน `.venv` ของ repo นี้ หากทำงานในโปรเจกต์อื่น ให้ติดตั้ง `requirements.txt` ใน environment ของโปรเจกต์นั้น หรือระบุ path ของ Python ที่ติดตั้งไว้ให้ agent ใช้
 
@@ -65,6 +68,12 @@ Python dependencies ติดตั้งใน `.venv` ของ repo นี้
 > ใช้ work-data-charts สร้างกราฟจากผลวิเคราะห์ที่ตรวจแล้ว เก็บ PNG, SVG และข้อมูลกราฟใน output/charts
 
 > ใช้ work-report-writing ทำรายงานจากหลักฐานและกราฟ แยกข้อเท็จจริง การตีความ ข้อเสนอแนะ และข้อจำกัด ส่งออก Word และ PDF
+
+> ใช้ Skill consolidate-company-data รวม CSV และ Excel ใน input เข้า company-template.xlsx ตามกติกาบริษัทที่แนบ บันทึกผลลัพธ์ใน output พร้อม Mapping, Pending, Decisions, Lineage และ Summary
+
+Skill รวมข้อมูลเป็นคำแนะนำให้ agent ใช้เครื่องมือ ไม่ใช่สคริปต์แปลงข้อมูลสำเร็จรูป รองรับ CSV/XLSX เป็นต้นทางและ XLSX เป็นผลลัพธ์ อ่าน template คีย์ และกติกาของแต่ละงานก่อนแปลง เมื่อคีย์เดียวกันมีค่าขัดแย้งจะพักทั้งกลุ่มโดยไม่เลือกแหล่งชนะเอง และไม่เติมข้อมูลที่ขาดด้วยการเดา
+
+หากต้องการตรวจ mapping ก่อนสร้างไฟล์ ให้เพิ่มคำสั่ง “แสดง mapping และตัวอย่างก่อน ยังไม่ต้องสร้างผลลัพธ์” กติกาใน `consolidate-company-data/references/workshop-rules.md` ใช้เฉพาะเมื่อระบุโจทย์ workshop ที่ตรงกัน งานอื่นให้ใช้กฎของบริษัทที่แนบแทน
 
 อ่าน `SKILL.md` ของแต่ละ Skill สำหรับพารามิเตอร์และข้อกำหนดของสคริปต์ อย่าสั่งรัน template ข้อมูลบริการกับตารางที่มีความหมายต่างกัน: ใช้ `--profile-only` เพื่อตรวจตารางใหม่ และกำหนดสูตร/โครงสร้างรายงานให้ตรงงานก่อน
 
@@ -81,4 +90,5 @@ python -m playwright install chromium
 - ตัวช่วยวิเคราะห์ข้อมูลบริการใช้เฉพาะ schema ที่อธิบายใน `references/service-contract.md`
 - ตรวจตัวหาร ข้อมูลขาด และหลักฐานก่อนเขียนข้อสรุป พร้อมเปิดตรวจกราฟและรายงานทุกหน้า
 - ทดสอบการสร้างรายงานบน Windows แล้ว ส่วน macOS ยังไม่ได้ทดสอบบนเครื่องจริง
+- Skill รวมข้อมูลผ่านตัวตรวจโครงสร้างและการทดสอบกติกาจาก CSV/XLSX กับ template ยอดขายและคำขอบริการแล้ว ยังไม่ได้ทดสอบการเรียก Skill ผ่านโมเดล OpenCode จริง
 - ฟอนต์ Sarabun แจกพร้อมใบอนุญาต SIL OFL ในโฟลเดอร์ assets ของแต่ละ Skill ที่ใช้ฟอนต์
